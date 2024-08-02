@@ -1,10 +1,11 @@
 import tkinter as tk
-from datetime import datetime, timedelta
+from datetime import timedelta
 from database import WorkTimeDatabase
 from timer import WorkTimer
 from interface import WorkTimeApp
 
 def main():
+    """Основная функция для запуска приложения."""
     root = tk.Tk()
 
     db = WorkTimeDatabase()

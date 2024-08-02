@@ -5,7 +5,10 @@ from timer import WorkTimer
 from database import WorkTimeDatabase
 
 class WorkTimeApp:
+    """Класс для создания графического интерфейса."""
+
     def __init__(self, root: tk.Tk, db: WorkTimeDatabase, timer: WorkTimer):
+        """Инициализация интерфейса."""
         self.root = root
         self.root.title("Work Time Tracker")
 
@@ -27,19 +30,23 @@ class WorkTimeApp:
         self.update_time()
 
     def start_timer(self) -> None:
+        """Запуск таймера."""
         self.timer.start()
         self.update_time()
 
     def pause_timer(self) -> None:
+        """Пауза таймера."""
         self.timer.pause()
         self.update_time()
 
     def stop_timer(self) -> None:
+        """Остановка таймера."""
         self.timer.stop()
         self.update_time()
         messagebox.showinfo("Work Time", f"Total work time: {self.format_time(self.timer.get_total_work_time())}")
 
     def update_time(self) -> None:
+        """Обновление времени на экране."""
         remaining_time = self.timer.get_remaining_time()
         self.time_label.config(text=self.format_time(remaining_time))
         if remaining_time.total_seconds() <= 0:
@@ -49,6 +56,7 @@ class WorkTimeApp:
         self.root.after(1000, self.update_time)
 
     def format_time(self, time: timedelta) -> str:
+        """Форматирование времени в строку."""
         total_seconds = int(time.total_seconds())
         hours, remainder = divmod(total_seconds, 3600)
         minutes, seconds = divmod(remainder, 60)
