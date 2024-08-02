@@ -1,2 +1,7 @@
 *.db
 __pycache__
+
+# build
+main.spec
+build
+dist
