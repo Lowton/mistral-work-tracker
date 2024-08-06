@@ -63,6 +63,27 @@ class WorkTimeDatabase:
 
         return total_work_time
 
+    def get_yesterday_overtime(self) -> timedelta:
+        """Получение переработки или недоработки за предыдущий день."""
+        yesterday = (datetime.now() - timedelta(days=1)).date()
+        self.cursor.execute('SELECT timestamp FROM work_time WHERE action = "start" AND DATE(timestamp) = ?', (yesterday,))
+        start_times = self.cursor.fetchall()
+        self.cursor.execute('SELECT timestamp FROM work_time WHERE action = "pause" AND DATE(timestamp) = ?', (yesterday,))
+        pause_times = self.cursor.fetchall()
+
+        total_work_time = timedelta()
+        for start_time in start_times:
+            start_dt = datetime.strptime(start_time[0], '%Y-%m-%d %H:%M:%S')
+            for pause_time in pause_times:
+                pause_dt = datetime.strptime(pause_time[0], '%Y-%m-%d %H:%M:%S')
+                if pause_dt > start_dt:
+                    total_work_time += (pause_dt - start_dt)
+                    break
+
+        expected_work_time = timedelta(hours=8)
+        overtime = total_work_time - expected_work_time
+        return overtime
+
     def close(self) -> None:
         """Закрытие соединения с базой данных."""
         self.conn.close()

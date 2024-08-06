@@ -1,5 +1,5 @@
 import tkinter as tk
-from datetime import timedelta
+from datetime import datetime, timedelta
 from database import WorkTimeDatabase
 from timer import WorkTimer
 from interface import WorkTimeApp
@@ -17,9 +17,10 @@ def main():
     db = WorkTimeDatabase()
     last_work_day = db.get_last_work_day()
     today_work_time = db.get_today_work_time()
+    yesterday_overtime = db.get_yesterday_overtime()
 
     if last_work_day:
-        initial_time = timedelta(hours=8) - today_work_time
+        initial_time = timedelta(hours=8) - today_work_time - yesterday_overtime
     else:
         initial_time = timedelta(hours=8)
 
