@@ -24,7 +24,7 @@ class WorkTimer:
         if not self.is_running:
             self.is_running = True
             self.start_time = datetime.now()
-            self.db.save_action("start")
+            self.db.save_action("start", timedelta())
 
     def pause(self) -> None:
         """Пауза таймера."""
@@ -33,13 +33,13 @@ class WorkTimer:
             elapsed_time = datetime.now() - self.start_time
             self.remaining_time -= elapsed_time
             self.total_work_time += elapsed_time
-            self.db.save_action("pause")
+            self.db.save_action("pause", elapsed_time)
 
     def stop(self) -> None:
         """Остановка таймера."""
         if self.is_running:
             self.pause()
-        self.db.save_action("stop")
+        self.db.save_action("stop", self.total_work_time)
 
     def get_remaining_time(self) -> timedelta:
         """Получение оставшегося времени."""
