@@ -63,12 +63,16 @@ class WorkTimeDatabase:
 
         return total_work_time
 
-    def get_yesterday_overtime(self) -> timedelta:
-        """Получение переработки или недоработки за предыдущий день."""
-        yesterday = (datetime.now() - timedelta(days=1)).date()
-        self.cursor.execute('SELECT timestamp FROM work_time WHERE action = "start" AND DATE(timestamp) = ?', (yesterday,))
+    def get_last_work_day_overtime(self) -> timedelta:
+        """Получение переработки или недоработки за последний рабочий день."""
+        last_work_day = self.get_last_work_day()
+        if not last_work_day:
+            return timedelta()
+
+        last_work_day_date = last_work_day.date()
+        self.cursor.execute('SELECT timestamp FROM work_time WHERE action = "start" AND DATE(timestamp) = ?', (last_work_day_date,))
         start_times = self.cursor.fetchall()
-        self.cursor.execute('SELECT timestamp FROM work_time WHERE action = "pause" AND DATE(timestamp) = ?', (yesterday,))
+        self.cursor.execute('SELECT timestamp FROM work_time WHERE action = "pause" AND DATE(timestamp) = ?', (last_work_day_date,))
         pause_times = self.cursor.fetchall()
 
         total_work_time = timedelta()
