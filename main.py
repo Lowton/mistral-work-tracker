@@ -4,6 +4,12 @@ from database import WorkTimeDatabase
 from timer import WorkTimer
 from interface import WorkTimeApp
 
+"""
+Основной модуль для запуска приложения.
+
+Этот модуль предоставляет основную функцию для запуска приложения Work Time Tracker.
+"""
+
 def main():
     """Основная функция для запуска приложения."""
     root = tk.Tk()

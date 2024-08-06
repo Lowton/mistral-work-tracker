@@ -1,6 +1,12 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
+"""
+Модуль для работы с таймером.
+
+Этот модуль предоставляет класс WorkTimer, который управляет таймером для отслеживания рабочего времени.
+"""
+
 class WorkTimer:
     """Класс для работы с таймером."""
 

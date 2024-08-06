@@ -2,6 +2,12 @@ import sqlite3
 from datetime import datetime, timedelta
 from typing import Optional
 
+"""
+Модуль для работы с базой данных SQLite.
+
+Этот модуль предоставляет класс WorkTimeDatabase, который управляет сохранением и извлечением данных о рабочем времени в базе данных SQLite.
+"""
+
 class WorkTimeDatabase:
     """Класс для работы с базой данных SQLite."""
 

@@ -4,6 +4,12 @@ from datetime import timedelta
 from timer import WorkTimer
 from database import WorkTimeDatabase
 
+"""
+Модуль для создания графического интерфейса.
+
+Этот модуль предоставляет класс WorkTimeApp, который создает графический интерфейс для отслеживания рабочего времени с использованием библиотеки Tkinter.
+"""
+
 class WorkTimeApp:
     """Класс для создания графического интерфейса."""
 
