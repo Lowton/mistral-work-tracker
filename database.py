@@ -63,30 +63,33 @@ class WorkTimeDatabase:
 
         return total_work_time
 
-    def get_last_work_day_overtime(self) -> timedelta:
-        """Получение переработки или недоработки за последний рабочий день."""
-        last_work_day = self.get_last_work_day()
-        if not last_work_day:
-            return timedelta()
+    def get_total_overtime(self) -> timedelta:
+        """Получение общей переработки или недоработки за все предыдущие рабочие дни."""
+        self.cursor.execute('SELECT DATE(timestamp) FROM work_time WHERE action = "stop" GROUP BY DATE(timestamp)')
+        work_days = self.cursor.fetchall()
 
-        last_work_day_date = last_work_day.date()
-        self.cursor.execute('SELECT timestamp FROM work_time WHERE action = "start" AND DATE(timestamp) = ?', (last_work_day_date,))
-        start_times = self.cursor.fetchall()
-        self.cursor.execute('SELECT timestamp FROM work_time WHERE action = "pause" AND DATE(timestamp) = ?', (last_work_day_date,))
-        pause_times = self.cursor.fetchall()
+        total_overtime = timedelta()
+        for work_day in work_days:
+            work_day_date = work_day[0]
+            self.cursor.execute('SELECT timestamp FROM work_time WHERE action = "start" AND DATE(timestamp) = ?', (work_day_date,))
+            start_times = self.cursor.fetchall()
+            self.cursor.execute('SELECT timestamp FROM work_time WHERE action = "pause" AND DATE(timestamp) = ?', (work_day_date,))
+            pause_times = self.cursor.fetchall()
 
-        total_work_time = timedelta()
-        for start_time in start_times:
-            start_dt = datetime.strptime(start_time[0], '%Y-%m-%d %H:%M:%S')
-            for pause_time in pause_times:
-                pause_dt = datetime.strptime(pause_time[0], '%Y-%m-%d %H:%M:%S')
-                if pause_dt > start_dt:
-                    total_work_time += (pause_dt - start_dt)
-                    break
+            total_work_time = timedelta()
+            for start_time in start_times:
+                start_dt = datetime.strptime(start_time[0], '%Y-%m-%d %H:%M:%S')
+                for pause_time in pause_times:
+                    pause_dt = datetime.strptime(pause_time[0], '%Y-%m-%d %H:%M:%S')
+                    if pause_dt > start_dt:
+                        total_work_time += (pause_dt - start_dt)
+                        break
 
-        expected_work_time = timedelta(hours=8)
-        overtime = total_work_time - expected_work_time
-        return overtime
+            expected_work_time = timedelta(hours=8)
+            overtime = total_work_time - expected_work_time
+            total_overtime += overtime
+
+        return total_overtime
 
     def close(self) -> None:
         """Закрытие соединения с базой данных."""

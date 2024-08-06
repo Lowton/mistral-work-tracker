@@ -17,10 +17,10 @@ def main():
     db = WorkTimeDatabase()
     last_work_day = db.get_last_work_day()
     today_work_time = db.get_today_work_time()
-    last_work_day_overtime = db.get_last_work_day_overtime()
+    total_overtime = db.get_total_overtime()
 
     if last_work_day:
-        initial_time = timedelta(hours=8) - today_work_time - last_work_day_overtime
+        initial_time = timedelta(hours=8) - today_work_time - total_overtime
     else:
         initial_time = timedelta(hours=8)
 
