@@ -28,6 +28,7 @@ def main():
 
     app = WorkTimeApp(root, db, timer)
     root.mainloop()
+    timer.stop()  # Выполняем тот же эвент, что и при нажатии кнопки "stop"
     db.close()
 
 if __name__ == "__main__":
