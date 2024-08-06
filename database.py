@@ -32,10 +32,14 @@ class WorkTimeDatabase:
     def save_action(self, action: str, session_time: timedelta) -> None:
         """Сохранение действия в базу данных."""
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        session_time_str = str(session_time)
+        if '.' in session_time_str:
+            hours, minutes, seconds = map(float, session_time_str.split(':'))
+            session_time_str = f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}"
         self.cursor.execute('INSERT INTO work_time (action, timestamp, session_time) VALUES (?, ?, ?)',
-                            (action, current_time, str(session_time)))
+                            (action, current_time, session_time_str))
         self.conn.commit()
-        print(f'Action saved: {action} at {current_time} with session time {session_time}')
+        print(f'Action saved: {action} at {current_time} with session time {session_time_str}')
 
     def get_last_work_day(self) -> Optional[datetime]:
         """Получение последнего рабочего дня."""
